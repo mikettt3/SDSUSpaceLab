@@ -1,0 +1,41 @@
+Mini IMU9
+
+Sensor						Slave Address (default)		Slave Address (SA0 driven low w/10kOhm resistor)
+LSM6DS33 (gyro and accel.)	1101011b					1101010b
+LIS3MDL (magnetometer)		0011110b					0011100b
+
+IMU  	|    Pi		| color
+pin  	|   pin		|
+
+Vin  	|  2/4 (5V)	| red
+gnd  	|  6 (Gnd)	| blk
+SDA	|  3 (SDA.1)	| gray
+SCL	|  5 (SCL.1)	| white
+
+RoboClaw|    Pi		| color
+S1		|  8 (GPIO 14(UART TX)) | Yellow
+S2		| 10 (GPIO 15(UART RX)) | Orange
+gnd		|  6 (Gnd)  | blk
+
+Adafruit MotorHat 
+Install directly on top of Pi.
+Assuming at addresses 0x60, 0x70
+
+
+sudo i2cdetect -y 1
+returns
+0x60, 0x70, 0x1E, 0x6B
+Unplugging just the IMU leaves 0x60 and 0x70
+Unplugging the Roboclaws results in no change.
+
+https://learn.adafruit.com/i2c-addresses/the-list
+Above site states that the LIS3MDL magnetometer is at 0x1E or 0x1C
+and that the LSM6DS33 gyro and accelerometer is at address 0x6A or 0x6B
+
+make sure to have circuitpython installed I guess.
+sudo pip install adafruit-circuitpython-motorkit
+- done
+
+Made test.py to use adafruit motorKit library. It currently works.
+
+

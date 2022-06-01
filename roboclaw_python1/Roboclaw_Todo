@@ -1,0 +1,23 @@
+Estop setting roboclaw user manual page 45
+e-stop (non-latching) all stop until switch released. 
+	(estop pull-pin, replaced and can run again.)
+Change this in Basic Micro motion studio in S3,4,5 dropdown menu
+Wiring shown on page 46
+
+Multi-unit packet serial wiring
+add a 1k - 4.7k pull-up resistor between 5VDC and uart rx (S2signal) 
+Does this need to be done if the Roboclaw is not supplying the 5V to the Pi?
+
+
+encoder page 73
+
+Websites 3/11/22
+https://resources.basicmicro.com/dual-channel-roboclaw-quick-start-guide/
+https://resources.basicmicro.com/velocity-settings-in-motion-studio/
+https://resources.basicmicro.com/general-settings-in-motion-studio/
+https://resources.basicmicro.com/packet-serial-with-the-raspberry-pi-3/
+https://resources.basicmicro.com/roboclaw-battery-eliminator-circuit-bec/
+https://downloads.basicmicro.com/docs/roboclaw_user_manual.pdf
+
+
+Done - All S1 wired together, all S2 wired together, all grounds wired together.

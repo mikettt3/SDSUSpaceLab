@@ -1,0 +1,26 @@
+In terminal enter
+
+"sudo nano /boot/config.txt"
+
+(scroll to bottom of file. Verify/change line to read)
+"enable uart=1"
+
+(ctrl+X) to exit nano
+Y to save
+
+Diable serial console by entering
+"sudo systemctl stop serial-getty@ttyS0.service"
+"sudo systemctl disable serial-getty@ttyS0.service"
+
+Remove serial console from system
+open cmdline.txt
+"sudo nano /boot/cmdline.txt"
+delete/comment out portion of file 
+"console=serial0,115200"
+
+ctrl+X to exit.
+Y to save
+Reboot Pi
+Pi should be able to to use miniUART on GPIO pins 14 and 15.
+WTF is the difference between UART and miniUART???
+Hopefully this makes this work on this microSD card on the Pi 4B

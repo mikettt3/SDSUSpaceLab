@@ -1,0 +1,97 @@
+https://projects.raspberrypi.org/en/projects/getting-started-with-git/0
+
+Git is installed using 
+sudo apt install git 
+Done
+
+git config --global user.name "SpacePiMS"
+git config user.email "mstromecki@sdsu.edu"
+(You can use your own similar name and your email to push and pull requests. 
+	This is what I curently have setup on this Pi in the Space Lab.)
+git config --global core.editor nano
+mkdir pigitrepo
+cd pigitrepo
+git init
+
+cp -R /home/pi/Desktop/IMU/IMUFiles /home/pi/pigitrepo/
+
+
+
+
+
+### Some (more) useful commands ###
+
+mkdir 	make directory
+cd	change into directory
+filename.md 	markdown file. Usually README.md
+ctrl+x 	save prompt and exit. Enter Y/N to save or not
+ls 	list files (same as dir in Windows)
+ls -a	list all files including hidden files and directories (same as dir /A on Win)
+mv	move file
+mv -i	move file interactively with check for overwriting
+
+some command options for mv and cp
+from https://piwithvic.com/raspberry-pi-terminal-mv-shell-command
+https://www.geeksforgeeks.org/cp-command-linux-examples/
+-i 		interactive
+-a 		archive (same as -dR -preserve=all)
+-backup[Control]	make backup of each existing Destination File
+-f 		force Don't prompt before overwriting
+-n		no-Clobber Don't overwrite file
+-u		update Move only when the source file is newer that the destination file or when 
+			destination file is missing
+-v		verbose Explain in detail what operation are being done
+-help 		display help usage
+-version	output all version information
+
+cat 	– Concatenate files.
+cp 	– Copy contents of files and directories
+head 	– Display the first part of a file.
+less 	– An Advanced File Viewer.
+ln 	– Link Symbolic Links to Files.
+ls 	– List Directory Contents.
+mkdir 	– Make Directory.
+more 	– An Basic File Viewer.
+mv 	– Move or Rename File or Directory.
+rm 	– Remove File.
+pwd 	– Print Working Directory.
+tail 	– Display the last part of file.
+touch 	– Update Key File Timestamps.
+wc 	– Word Count for counting words in a file.
+
+touch <filename>	Make file <filename>
+git init
+git config --global init.defaultBranch <name>
+git branch -m <name> 	Rename branch just created.
+ls -a .git
+git add <filename>
+git add --all
+git status
+git commit -am "add <message/notes about what has been added or changed>"
+git log <filename>
+git log -p <filename>	shows the contents of file in case message is not descriptive enough
+git checkout <commit hash>	Revert file back to commit with corresponding commit hash. 
+	Remember to add a message that you have restored for a specific purpose.
+git checkout -b <branch name>	Create branch in repo
+git branch	Shows branches available
+git branch -D <branch name> 	Delete branch
+git checkout master 	Don't forget to commit all branch changes
+git merge <branch name> 
+git push -u origin master
+git push -u origin <branch name>
+git clone https://github.com/<rest of web address for the repo you want to work out of>
+(Do your work and then commit changes back to repo)
+(Repo owner can merge or close pull request)
+
+git remote add origin <repo name>
+repo name: 	git@github.com:mikettt3/SDSUSpaceLabADCS_Testbed.git
+https://github.com/mikettt3/SDSUSpaceLabADCS_Testbed.git	HTTPS webpage address
+gh repo clone mikettt3/SDSUSpaceLabADCS_Testbed			GitHub CLI
+
+https://stackoverflow.com/questions/18773598/creating-folders-inside-a-github-repository-without-using-git
+
+
+
+
+
+
