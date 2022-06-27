@@ -9,6 +9,17 @@ print('Start')
 
 kit = MotorKit()
 
+# 0V for 10 secs
+# ramp 5V for 1 sec
+# 5V for 10 sec
+# ramp 0V for 1 sec
+# 0V for 10 secs
+# ramp to -5V for 1 sec
+# -5V for 10 sec
+# ramp 0V for 1 sec
+# 0V for 10 secs
+# End
+
 for i in range(50):
     kit.motor1.throttle = 1.0 - 2*(i/50)
     sleep(0.1)
