@@ -18,54 +18,93 @@ roboclaw.Open() # Call the Open() function on the RoboClaw object and start comm
 # print(MBatt)
 
 # def SpeedAccelM1M2_2(self,address,accel1,speed1,accel2,speed2)
-roboclaw.SpeedAccelM1M2_2(address1,2000, 500,2000, 500)
-sleep(1)
-S1M1_1=roboclaw.ReadSpeedM1(address1) # Speed Roboclaw 1, motor 2, _instance#
-print(S1M1_1)
-roboclaw.SpeedAccelM1M2_2(address1,2000,   0,2000, 2500)
-sleep(1)
-S1M2_1=roboclaw.ReadSpeedM2(address1)
-print(S1M2_1)
-roboclaw.SpeedAccelM1M2_2(address1,2000,   0,2000,   0)
-sleep(1)
+# roboclaw.SpeedAccelM1M2_2(address1,1000, 1,1000, 5)
+# sleep(2)
+# roboclaw.SpeedAccelM1M2_2(address1,1000, 6000,1000, 8000)
+# sleep(2)
+roboclaw.ForwardM1(address2,0)
+sleep(2)
 
-roboclaw.SpeedAccelM1M2_2(address2,2000, 500,2000, 500)
-sleep(1)
-S2M1_1=roboclaw.ReadSpeedM1(address2)
-print(S2M1_1)
-roboclaw.SpeedAccelM1M2_2(address2,2000, 0,8000, 1000)
-sleep(1)
-S2M2_1=roboclaw.ReadSpeedM2(address2)
-print(S2M2_1)
-roboclaw.SpeedAccelM1M2_2(address2,2000, 0,2000,   0)
-sleep(1)
+# while True:
+#     roboclaw.ForwardM2(address1,10)
+#     sleep(2)
+#     roboclaw.ForwardM2(address1,0) 
+#     roboclaw.BackwardM2(address1,10)
+#     sleep(2)
 
-roboclaw.SpeedAccelM1M2(address1,2000, 500, 0)
-sleep(1)
-S2M1_1 = roboclaw.ReadSpeedM1(address1)
-S2M1_11 = roboclaw.ReadEncM2(address1)
-print(S2M1_1)
-print(S2M1_11)
-roboclaw.SpeedAccelM1M2(address1,2000, 0, 2500)
-sleep(1)
-S2M2_1=roboclaw.ReadSpeedM2(address1)
-print(S2M2_1)
-roboclaw.SpeedAccelM1M2(address1,2000, 0, 0)
-sleep(1)
+# roboclaw.SpeedAccelM1M2_2(address1,1000, 0,1000, 150)
+# sleep(2)
+# roboclaw.SpeedAccelM1M2_2(address1,1000, 0,1000, 0)
+# sleep(2)
+# roboclaw.SpeedAccelM1M2(address1,1000, 0 , -150)
+# sleep(2)
+# roboclaw.ForwardM2(address1,128)
+# sleep(2)
 
-# Still not reading speeds or encoder at all. WTF.
-# Why does only address2_M1 not go back to 0 RPM unitl commanded by ForwardM1(add2)
-# Updated Roboclaws to firmware version 4.2.1 on 5/24/2022. Fast response and readss encoders now.
+roboclaw.ForwardM1(address1,127)
+sleep(15)
+# roboclaw.BackwardM2(address1,10)
 
+#     roboclaw.SpeedAccelM1M2_2(address1,1000, 0, 1000, 2000)
+#   roboclaw.SpeedAccelDistanceM2(address1,100,1,100,1)
+
+''' 
+# sleep(15)
+# roboclaw.ForwardM2(address1,131)
+# sleep(7)
+# S1M1_1=roboclaw.ReadSpeedM1(address1) # Speed Roboclaw 1, motor 2, _instance#
+# print(S1M1_1) # displays very high rpm
+# sleep(1) 
+# roboclaw.ForwardM2(address1,0)
+
+# roboclaw.SpeedAccelM1M2_2(address1,1000,   0,1000, 0)
+# sleep(1)
+# S1M2_1=roboclaw.ReadSpeedM1(address1)
+# print(S1M2_1)
+# roboclaw.SpeedAccelM1M2_2(address1,2000,   0,2000,   0)
+# sleep(1)
+# 
+# roboclaw.SpeedAccelM1M2_2(address2,2000, 500,2000, 500)
+# sleep(1)
+# S2M1_1=roboclaw.ReadSpeedM1(address2)
+# print(S2M1_1)
+# roboclaw.SpeedAccelM1M2_2(address2,2000, 0,8000, 1000)
+# sleep(1)
+# S2M2_1=roboclaw.ReadSpeedM2(address2)
+# print(S2M2_1)
+# roboclaw.SpeedAccelM1M2_2(address2,2000, 0,2000,   0)
+# sleep(1)
+# 
+# #roboclaw.SpeedAccelM1M2(address1,2000, 500, 0)
+# sleep(1)
+# S2M1_1 = roboclaw.ReadSpeedM1(address1)
+# S2M1_11 = roboclaw.ReadEncM2(address1)
+# print(S2M1_1)
+# print(S2M1_11) # displays very high rpm
+# #roboclaw.SpeedAccelM1M2(address1,2000, 0, 2500)
+# #sleep(1)
+# S2M2_1=roboclaw.ReadSpeedM2(address1)
+# print(S2M2_1)
+# roboclaw.SpeedAccelM1M2(address1,2000, 0, 0)
+# sleep(1)
+# 
+# # Still not reading speeds or encoder at all. WTF.
+# # Why does only address2_M1 not go back to 0 RPM unitl commanded by ForwardM1(add2)
+# # Updated Roboclaws to firmware version 4.2.1 on 5/24/2022. Fast response and readss encoders now.
+# 6/21/22 Roboclaws not using some commands correctly.
+# SpeedAccelM1M2 speeds don't change. Either  on or off'''
+
+
+'''Kill motors and print done'''
 roboclaw.ForwardM1(address1,0)
 roboclaw.ForwardM1(address2,0)
 roboclaw.ForwardM2(address1,0)
 roboclaw.ForwardM2(address2,0)
-# sleep(0.5)
+sleep(0.5)
 
 print('Done')
-
-# List of all commands from roboclaw_3
+quit()
+'''# List of all commands from roboclaw_3
 ## M1FORWARD = 0      ForwardM1(self,address,val)
 ## M1BACKWARD = 1     BackwardM1(self,address,val)
 ## SETMINMB = 2       SetMinVoltageMainBattery(self,address,val)
@@ -158,3 +197,4 @@ print('Done')
 # READEEPROM = 252     ReadEeprom(self,address,ee_address)
 # WRITEEEPROM = 253    WriteEeprom(self,address,ee_address,ee_word)
 # FLAGBOOTLOADER = 255 Open(self)
+'''
