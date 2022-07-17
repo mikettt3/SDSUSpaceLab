@@ -3,12 +3,12 @@ In terminal enter
 "sudo nano /boot/config.txt"
 
 (scroll to bottom of file. Verify/change line to read)
-"enable uart=1"
+"enable_uart=1"
 
 (ctrl+X) to exit nano
 Y to save
 
-Diable serial console by entering
+Disable serial console by entering
 "sudo systemctl stop serial-getty@ttyS0.service"
 "sudo systemctl disable serial-getty@ttyS0.service"
 

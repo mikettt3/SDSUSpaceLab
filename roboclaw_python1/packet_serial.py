@@ -28,7 +28,9 @@ from time import sleep
 #         roboclaw.ForwardM2(address,0)
 #         sleep(2)
        
-print('Test Start')
+############################################################################
+############################################################################
+############################################################################
 
 #Test out forwards and backwards operation of a single roboclaw
 address1 = 0x80 #128 in hex == 0x80. 129 == 0x81, 130==0x82, 131==0x83
@@ -36,45 +38,59 @@ address2 = 0x81
 roboclaw = Roboclaw("/dev/ttyS0", 38400) # Create the RoboClaw object, passing the serial port and baudrate
 roboclaw.Open() # Call the Open() function on the RoboClaw object and start communication
 
+tl = 2 # long pause time
+ts = 0.5 # short pause time
+
+print('Test Start')
+
+roboclaw.ForwardM1(address1,0)
+roboclaw.ForwardM2(address1,0)
+# roboclaw.ForwardM1(address2,0)
+# roboclaw.ForwardM2(address2,0)
+sleep(2)
+
 roboclaw.SpeedAccelM1M2_2(address1,2000, 500,2000,0)
-roboclaw.SpeedAccelM1M2_2(address1,2000, 0,2000,500)
-roboclaw.SpeedAccelM1M2_2(address1,2000, 0,2000,0)
-roboclaw.SpeedAccelM1M2_2(address2,2000, 500,2000,0)
-roboclaw.SpeedAccelM1M2_2(address2,2000, 0,2000,500)
-roboclaw.SpeedAccelM1M2_2(address2,2000, 0,2000,0)
+sleep(0.5)
+roboclaw.SpeedAccelM1M2_2(address1,2000,-500,2000,500)
+sleep(0.5)
+roboclaw.SpeedAccelM1M2_2(address1,2000,   0,2000,0)
+sleep(0.5)
+# roboclaw.SpeedAccelM1M2_2(address2,2000, 500,2000,0)
+# roboclaw.SpeedAccelM1M2_2(address2,2000, 0,2000,500)
+# roboclaw.SpeedAccelM1M2_2(address2,2000, 0,2000,0)
 
 
 roboclaw.ForwardM1(address1,0)
-roboclaw.ForwardM1(address2,0)
 roboclaw.ForwardM2(address1,0)
-roboclaw.ForwardM2(address2,0)
-sleep(0.5)
+# roboclaw.ForwardM1(address2,0)
+# roboclaw.ForwardM2(address2,0)
+sleep(2)
 
 # SpeedAccelM1M2_2(self,address,accel1,speed1(RPM),accel2,speed2(RPM)):
 roboclaw.SpeedAccelM1M2_2(address1,1000,500,1000,2220) #max rpm ~8220 @~16VDC
-roboclaw.SpeedAccelM1M2_2(address2,1000,500,1000,500)
+# roboclaw.SpeedAccelM1M2_2(address2,1000,500,1000,500)
 sleep(2)
 
 S1M2_1=roboclaw.ReadSpeedM2(address1) # Speed Roboclaw 1, motor 2, _instance#
-S2M1_1=roboclaw.ReadSpeedM1(address2)
+# S2M1_1=roboclaw.ReadSpeedM1(address2)
 # 	enc1 = rc.ReadEncM1(address)
 # 	enc2 = rc.ReadEncM2(address)
 # 	speed1 = rc.ReadSpeedM1(address)
 # 	speed2 = rc.ReadSpeedM2(address)
 print(S1M2_1)
-print(S2M1_1)
+# print(S2M1_1)
 
 roboclaw.SpeedAccelM1M2_2(address1,1000,-500,2000,0)
-roboclaw.SpeedAccelM1M2_2(address2,1000,-500,2000,0)
+# roboclaw.SpeedAccelM1M2_2(address2,1000,-500,2000,0)
 sleep(1)
 roboclaw.SpeedAccelM1M2_2(address1,1000,0,50,-1200)
-roboclaw.SpeedAccelM1M2_2(address2,1000,0,50,-1200)
+# roboclaw.SpeedAccelM1M2_2(address2,1000,0,50,-1200)
 sleep(1)
 
 S1M2_2=roboclaw.ReadSpeedM2(address1) # Speed Roboclaw 1, motor 2, _instance#
-S2M1_2=roboclaw.ReadSpeedM1(address2)
+# S2M1_2=roboclaw.ReadSpeedM1(address2)
 print(S1M2_2)
-print(S2M1_2)
+# print(S2M1_2)
 
 # 	rc.SpeedAccelDistanceM1(address,48000,-12000,46500,1);
 # 	rc.SpeedAccelDistanceM2(address,48000,12000,46500,1);
@@ -93,9 +109,9 @@ print(S2M1_2)
 
 
 roboclaw.ForwardM1(address1,0)
-roboclaw.ForwardM1(address2,0)
+# roboclaw.ForwardM1(address2,0)
 roboclaw.ForwardM2(address1,0)
-roboclaw.ForwardM2(address2,0)
+# roboclaw.ForwardM2(address2,0)
 
 print('Done')
 # sleep(2)
