@@ -2,8 +2,8 @@ from roboclaw_3 import Roboclaw
 from time import sleep
 
 # Accelerate each motor on each roboclaw, read the encoder speed and then slow and stop each motor.
-
-print('Test Start')
+# Page numbers in roboclaw_user_manual.pdf located at
+# file:///home/spacepi2/Desktop/SDSUSpaceLabADCS_Testbed/roboclaw_python1/roboclaw_user_manual.pdf
 
 #Test out forwards and backwards operation of a single roboclaw
 address1 = 0x80 #128 in hex == 0x80. 129 == 0x81, 130==0x82, 131==0x83
@@ -15,32 +15,63 @@ txl = 5  # extra long pause
 tl = 2   # long pause time
 ts = 0.5 # short pause time
 
+print('Test Start')
+
 # Stop motors
 roboclaw.ForwardM1(address1,0)
 roboclaw.ForwardM2(address1,0)
 sleep(tl)
 
-# Cannot read main battery voltage in Python. Function not defined apparently.
-# Function definition exists on line 747 in roboclaw_3
-# MBatt = ReadMainBatteryVoltage(address2)
-# print('Main battery level')
-# print(MBatt)
+# Read main battery voltage level Command 24 pg68
+MBatt = roboclaw.ReadMainBatteryVoltage(address1)
+print('Main battery level in 0.1 VDC (10 = 1 VDC)')
+print(MBatt, '(add #, Volts DC)')
 
+# Reset encoders. Command 20 Pg 87
+roboclaw.ResetEncoders(address1)
 
+# Read PID Commands 55,56,63,64. pg 98,99
+M1V_PID = roboclaw.ReadM1VelocityPID(address1)
+M2V_PID = roboclaw.ReadM2VelocityPID(address1)
+M1P_PID = roboclaw.ReadM1PositionPID(address1)
+M2P_PID = roboclaw.ReadM2PositionPID(address1)
+print(M1V_PID, 'M1V_PID [P I D QPPS CRC]')
+print(M2V_PID, 'M2V_PID [P I D QPPS CRC]')
+print(M1P_PID, 'M1P_PID [P I D MaxI Deadzone MinPos MaxPos CRC]')
+print(M2P_PID, 'M2P_PID [P I D MaxI Deadzone MinPos MaxPos CRC]')
+
+# Command motors with SpeedAccelM1/M2/M1M2
+# Command 38,39,40. Pg 93-94
+# SpeedAccelM1/M2(self,address,accel,speed)
+# SpeedAccelM1M2(self,address,accel,speed1,speed2)
+# Values in QPPS. Accel [QPPS/Sec]; speed [QPPS]
+# Recall 48 QPP for one full motor rotation, 211.2 for 1 full wheel rotation
+roboclaw.SpeedAccelM1(address1,48,24)
+sleep(txl)
+roboclaw.SpeedAccelM2(address1,48,-211)
+sleep(txl)
+roboclaw.SpeedAccelM1M2(address1,48,48,96)
+sleep(txl)
+print('End Command motors with SpeedAccel')
+
+# Command motors with SpeedAccelM1/M2/M1M2_2
+# Command 50. Pg 97
 # def SpeedAccelM1M2_2(self,address,accel1,speed1,accel2,speed2)
-roboclaw.SpeedAccelM1M2_2(address1,2000, 500,2000,   0)
+# Values should be in QPPS
+roboclaw.SpeedAccelM1M2_2(address1,422,   1,422,   1)
 sleep(tl)
-roboclaw.SpeedAccelM1M2_2(address1,2000,-500,2000, 500)
+roboclaw.SpeedAccelM1M2_2(address1,422,  -1,422,  -1)
 sleep(tl)
-roboclaw.SpeedAccelM1M2_2(address1,2000,   0,2000,-500)
+roboclaw.SpeedAccelM1M2_2(address1,422,   0,422,   0)
 sleep(tl)
-roboclaw.SpeedAccelM1M2_2(address1,2000,   0,2000,   0)
-sleep(tl)
-# roboclaw.SpeedAccelM1M2_2(address1,1000, 1,1000, 5)
-# sleep(2)
-# roboclaw.SpeedAccelM1M2_2(address1,1000, 6000,1000, 8000)
-# sleep(2)
+print('End Command motors with SpeedAccel_2')
 
+# Command motor motion with Forward/BackwardM1/M2()
+# Commands 0,1,4,5. Pg63-64
+# Valid data range is 0-127. 127=full speed; 64=1/2 speed; 0=stop.
+# ForwardM1(self,address,val)
+roboclaw.ForwardM1(address1,64)
+sleep(tl)
 roboclaw.ForwardM1(address1,127)
 sleep(tl)
 roboclaw.ForwardM2(address1,10)
@@ -48,91 +79,41 @@ sleep(tl)
 roboclaw.ForwardM2(address1,0) 
 roboclaw.BackwardM2(address1,10)
 sleep(tl)
+print('End Command motors with Fwd/BkwdM1/M2')
 
-
-# while True:
-#     roboclaw.ForwardM2(address1,10)
-#     sleep(2)
-#     roboclaw.ForwardM2(address1,0) 
-#     roboclaw.BackwardM2(address1,10)
-#     sleep(2)
-
-# roboclaw.SpeedAccelM1M2_2(address1,1000, 0,1000, 150)
-# sleep(2)
-# roboclaw.SpeedAccelM1M2_2(address1,1000, 0,1000, 0)
-# sleep(2)
-# roboclaw.SpeedAccelM1M2(address1,1000, 0 , -150)
-# sleep(2)
-# roboclaw.ForwardM2(address1,128)
-# sleep(2)
-
-# roboclaw.ForwardM1(address1,127)
-# sleep(5)
-# roboclaw.BackwardM2(address1,10)
-
-#     roboclaw.SpeedAccelM1M2_2(address1,1000, 0, 1000, 2000)
-#   roboclaw.SpeedAccelDistanceM2(address1,100,1,100,1)
-
-''' 
-# sleep(15)
-# roboclaw.ForwardM2(address1,131)
-# sleep(7)
-# S1M1_1=roboclaw.ReadSpeedM1(address1) # Speed Roboclaw 1, motor 2, _instance#
-# print(S1M1_1) # displays very high rpm
-# sleep(1) 
-# roboclaw.ForwardM2(address1,0)
-
-# roboclaw.SpeedAccelM1M2_2(address1,1000,   0,1000, 0)
-# sleep(1)
-# S1M2_1=roboclaw.ReadSpeedM1(address1)
-# print(S1M2_1)
-# roboclaw.SpeedAccelM1M2_2(address1,2000,   0,2000,   0)
-# sleep(1)
-# 
-# roboclaw.SpeedAccelM1M2_2(address2,2000, 500,2000, 500)
-# sleep(1)
-# S2M1_1=roboclaw.ReadSpeedM1(address2)
-# print(S2M1_1)
-# roboclaw.SpeedAccelM1M2_2(address2,2000, 0,8000, 1000)
-# sleep(1)
-# S2M2_1=roboclaw.ReadSpeedM2(address2)
-# print(S2M2_1)
-# roboclaw.SpeedAccelM1M2_2(address2,2000, 0,2000,   0)
-# sleep(1)
-# 
-# #roboclaw.SpeedAccelM1M2(address1,2000, 500, 0)
-# sleep(1)
-# S2M1_1 = roboclaw.ReadSpeedM1(address1)
-# S2M1_11 = roboclaw.ReadEncM2(address1)
-# print(S2M1_1)
-# print(S2M1_11) # displays very high rpm
-# #roboclaw.SpeedAccelM1M2(address1,2000, 0, 2500)
-# #sleep(1)
-# S2M2_1=roboclaw.ReadSpeedM2(address1)
-# print(S2M2_1)
-# roboclaw.SpeedAccelM1M2(address1,2000, 0, 0)
-# sleep(1)
-# 
-# # Still not reading speeds or encoder at all. WTF.
-# # Why does only address2_M1 not go back to 0 RPM unitl commanded by ForwardM1(add2)
-# # Updated Roboclaws to firmware version 4.2.1 on 5/24/2022. Fast response and reads encoders now.
-# 6/21/22 Roboclaws not using some commands correctly.
-# SpeedAccelM1M2 speeds don't change. Either  on or off
-Update 7/17/22 New Ras Pi 2GB with fresh install of NOOBS and completed all instructions to enable
-UART on this Pi and get Pi and files up to date on this Pi. Instructins work correctly.
-Something must have been changed on the other main Pi or the files'''
-
+# Read Encoders Commands 16,17,18,19. Pg86-87
+E1M1_1 = roboclaw.ReadEncM1(address1)
+E1M2_1 = roboclaw.ReadEncM2(address1)
+S1M1_1 = roboclaw.ReadSpeedM1(address1)
+S1M2_1 = roboclaw.ReadSpeedM2(address1)
+print(E1M1_1, 'Read Encoder M1 address 1')
+print(E1M2_1, 'Read Encoder M2 address 1')
+print(S1M1_1, 'Read Speed M1 address 1')
+print(S1M2_1, 'Read Speed M2 address 1')
 
 
 '''Kill motors and print done'''
 roboclaw.ForwardM1(address1,0)
-# roboclaw.ForwardM1(address2,0)
 roboclaw.ForwardM2(address1,0)
-# roboclaw.ForwardM2(address2,0)
-sleep(0.5)
-
+roboclaw.ForwardM1(address2,0)
+roboclaw.ForwardM2(address2,0)
+sleep(ts)
 print('Done')
 quit()
+
+''' 
+Not reading speeds or encoder at all.
+Why does only address2_M1 not go back to 0 RPM unitl commanded by ForwardM1(add2)
+Updated Roboclaws to firmware version 4.2.1 on 5/24/2022. Fast response and reads encoders now.
+6/21/22 Roboclaws not using some commands correctly.
+SpeedAccelM1M2 speeds don't change. Either  on or off
+Update 7/17/22 New Ras Pi 2GB with fresh install of NOOBS and completed all instructions to enable
+UART on this Pi and get Pi and files up to date on this Pi. Instructions work correctly.
+Something must have been changed on the other main Pi or the files
+On the SpacePi2GB these functions all work as is to control the motor direction but
+only forward/backwardM1/M2 controls the speed.
+Try Duty control
+'''
 
 
 '''# List of all commands from roboclaw_3
@@ -175,22 +156,22 @@ quit()
 # M1SPEEDACCEL = 38   SpeedAccelM1(self,address,accel,speed)
 # M2SPEEDACCEL = 39   SpeedAccelM2(self,address,accel,speed)
 ## MIXEDSPEEDACCEL = 40 SpeedAccelM1M2(self,address,accel,speed1,speed2)
-# M1SPEEDDIST = 41    SpeedDistanceM1(self,address,speed,distance,buffer)   
-# M2SPEEDDIST = 42    SpeedDistanceM2(self,address,speed,distance,buffer)
+## M1SPEEDDIST = 41    SpeedDistanceM1(self,address,speed,distance,buffer)   
+## M2SPEEDDIST = 42    SpeedDistanceM2(self,address,speed,distance,buffer)
 ## MIXEDSPEEDDIST = 43 SpeedDistanceM1M2(self,address,speed1,distance1,speed2,distance2,buffer)
 # M1SPEEDACCELDIST = 44 SpeedAccelDistanceM1(self,address,accel,speed,distance,buffer)
 # M2SPEEDACCELDIST = 45 SpeedAccelDistanceM2(self,address,accel,speed,distance,buffer)
-# MIXEDSPEEDACCELDIST = 46 SpeedAccelDistanceM1M2(self,address,accel,speed1,distance1,speed2,distance2,buffer)??? Typos?
+## MIXEDSPEEDACCELDIST = 46 SpeedAccelDistanceM1M2(self,address,accel,speed1,distance1,speed2,distance2,buffer)??? Typos?
 # GETBUFFERS = 47     ReadBuffers(self,address)
 # GETPWMS = 48        ReadPWMs(self,address)
 # GETCURRENTS = 49    ReadCurrents(self,address)
 # MIXEDSPEED2ACCEL = 50 SpeedAccelM1M2_2(self,address,accel1,speed1,accel2,speed2)
 ## MIXEDSPEED2ACCELDIST = 51 SpeedAccelDistanceM1M2_2(self,address,accel1,speed1,distance1,accel2,speed2,distance2,buffer)
-# M1DUTYACCEL = 52    DutyAccelM1(self,address,accel,duty)
-# M2DUTYACCEL = 53    DutyAccelM2(self,address,accel,duty)
-# MIXEDDUTYACCEL = 54 DutyAccelM1M2(self,address,accel1,duty1,accel2,duty2)
-# READM1PID = 55      ReadM1VelocityPID(self,address)
-# READM2PID = 56      ReadM2VelocityPID(self,address)
+## M1DUTYACCEL = 52    DutyAccelM1(self,address,accel,duty)
+## M2DUTYACCEL = 53    DutyAccelM2(self,address,accel,duty)
+## MIXEDDUTYACCEL = 54 DutyAccelM1M2(self,address,accel1,duty1,accel2,duty2)
+## READM1PID = 55      ReadM1VelocityPID(self,address)
+## READM2PID = 56      ReadM2VelocityPID(self,address)
 ## SETMAINVOLTAGES = 57 SetMainVoltages(self,address,min, max)
 ## SETLOGICVOLTAGES = 58 SetLogicVoltages(self,address,min, max)
 ## GETMINMAXMAINVOLTAGES = 59 ReadMinMaxMainVoltages(self,address)
