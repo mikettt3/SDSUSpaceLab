@@ -31,6 +31,24 @@ while True:
     kit.motor3.throttle = -Throttle
     sleep(step)
 
+'''Thoughts on code for Sin function
+Lookup table for sin values. Tables are probably faster than math.sin() verify?
+https://www.grc.nasa.gov/www/k-12/airplane/tablsin.html
+
+Loop for 1 - 90 possibly by 2 or 3. (Math sin(radians))
+While true
+    Loop +89 - -90
+    Loop -89 - +90
+
+#######
+
+ArraySin = [0 for element in range(90)]
+for i in range(90)
+    ArraySin(i) = math sin(i)
+
+
+'''
+
 
 # while True:
 #     for i in range(10):
