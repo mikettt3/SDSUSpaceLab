@@ -2,6 +2,8 @@ from adafruit_motorkit import MotorKit
 from time import sleep
 import board
 import csv
+import math
+import numpy as np
 
 c = open('magTestprograms.csv','w')
 
@@ -25,29 +27,30 @@ sleep(1)
 # kit.motor3.throttle = Throttle
 
 print('On')
-while True:
-    kit.motor3.throttle = Throttle
-    sleep(step)
-    kit.motor3.throttle = -Throttle
-    sleep(step)
 
-'''Thoughts on code for Sin function
-Lookup table for sin values. Tables are probably faster than math.sin() verify?
-https://www.grc.nasa.gov/www/k-12/airplane/tablsin.html
+'''Square Wave'''
+##while True:
+##    kit.motor3.throttle = Throttle
+##    sleep(step)
+##    kit.motor3.throttle = -Throttle
+##    sleep(step)
 
-Loop for 1 - 90 possibly by 2 or 3. (Math sin(radians))
-While true
-    Loop +89 - -90
-    Loop -89 - +90
+'''Code for Sine function'''
+dsin = 101        # Size of sine array. pi/2, pi must land on integer values
+dt = period/dsin  # time step
+PI = math.pi      # Pi
+Sine = [0 for element in range(dsin)] # Initialize sine array
+piArray  = np.linspace(0, 2*PI, dsin)
 
-#######
+''' Define sine array'''
+for i in range(dsin):
+    Sine[i] = math.sin(piArray[i])
 
-ArraySin = [0 for element in range(90)]
-for i in range(90)
-    ArraySin(i) = math sin(i)
-
-
-'''
+# while True
+    for j in range(dsin):
+        # kit.motor3.throttle = Throttle*ArraySin[j]
+        # print(Throttle*Sine[j])
+        sleep(dt)
 
 
 # while True:
