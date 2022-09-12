@@ -116,7 +116,9 @@ if __name__ == '__main__':
     Can use IR tachometer in blue case for these tests or encoders reported 
     speed. This test is just to find max throttle setting, not what that 
     RPM actually is. Can also use a speed command utilizing 0-127 rather 
-    than QPPS structure.'''
+    than QPPS structure. Then find max throttle with QPPS. Just increment 
+    up quickly until the motor stops accelerating and record that value 
+    to narrow it down.'''
     # loop
     #   Throttle = 0. RPM Observed = 0
     #   Throttle = 10%. sleep(1) RPM Observed = for example 100 RPM
@@ -134,7 +136,8 @@ if __name__ == '__main__':
     
     ''' Find deadzones from stopped
     All motors together. Increase throttle from 0 to 15 % of maximum.
-    Note when all motors are first moving smoothly.'''
+    Note when all motors are first moving smoothly. Verify with QPPS 
+    settings.'''
     # All motors increment from stopped to 20% by 1. Use 0-127 structure 
     # command. Should be around 7.
     # loop
@@ -177,7 +180,9 @@ if __name__ == '__main__':
     For each motor individually. Increase in 10% steps, take 3 stabel 
     tachometer readings and write them down. Enter them into the code and 
     then have it move on if you can. Also note QPPS velocity readings 
-    during this time and have the program self record them.'''
+    during this time and have the program self record them. Luke has 
+    already done this to some extent but not with the PID settings. 
+    Verify QPPS velocity to RPM relationships.'''
     # 10% You enter [100, 110, 105] [enter] 
     # --> Store A1M1_10Velocity taken every 0.5 seconds
     # --> Store A1M1_10TotalDist taken at the end. No need to rezero.
