@@ -46,9 +46,9 @@ piArray  = np.linspace(0, 2*PI, dsin)
 for i in range(dsin):
     Sine[i] = math.sin(piArray[i])
 
-# while True
+while True:
     for j in range(dsin):
-        # kit.motor3.throttle = Throttle*ArraySin[j]
+        kit.motor3.throttle = Throttle*Sine[j]
         # print(Throttle*Sine[j])
         sleep(dt)
 
