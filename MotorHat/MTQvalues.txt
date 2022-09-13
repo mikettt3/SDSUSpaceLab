@@ -33,10 +33,18 @@ I = V/R - already have these values somewhere.
 E_ind = 0.5*L*I^2
 energy stored in inductor coil.
 
-E_cap = 0.5*C*V^2
+E_cap = 70.5*C*V^2
 energy in cap. This is voltage across immediately closed switch.
  Can define this voltage
 
 R in series with cap = R=V/I
 Imax  Vmax    L      E         C        Rc
 0.14   10  0.2161 2.118e-3 42.3556e-6 71.4286
+
+9/12/2022
+R measured by Fluke45 bench DMM. Zero=0.17 Ohm
+  = [9.33  8.37  8.67].
+Initial goal [9.2143    8.3143    9.1343] Ohms
+After burnt resistor 5.35 Ohms
+Still good R3_1= 1.26 Ohms
+One 8 Ohm replaced by 2 15 Ohm. 1 Ohm replaced by 2 Ohm.
