@@ -48,3 +48,9 @@ Initial goal [9.2143    8.3143    9.1343] Ohms
 After burnt resistor 5.35 Ohms
 Still good R3_1= 1.26 Ohms
 One 8 Ohm replaced by 2 15 Ohm. 1 Ohm replaced by 2 Ohm.
+
+r3_2 of 2 15 ohm parallel = 7.45 ohm
+9.13-7.45 = 1.68
+r3_1 0f 7.5 and 2.2 Ohm in parallel = 1/((1/7.5)+(1/2.2)) = 1.701 Ohm
+r3 = (9.50 to 9.70)-0.40 = 9.10 to 9.30
+Peak meter DMM reads about 9.1 Ohms
