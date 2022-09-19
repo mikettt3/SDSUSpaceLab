@@ -118,3 +118,30 @@ Rtest = inv((1/R_req) + (1/R3_errR));
 
 0-100 or 0-1000 Ohm variable resistor should work if the resistance 
 values are actually incorrect and not just a bad connection. 
+
+% iTest = V/(R_MTQ(3) + inv((1/R_add(3))+(1/1))); % i = 0.1819
+% iTest = V/(R_MTQ(3) + inv((1/R_add(3))+(1/5))); % i = 0.1677
+% iTest = V/(R_MTQ(3) + inv((1/R_add(3))+(1/20))); % i = 0.1522
+% iTest = V/(R_MTQ(3) + inv((1/R_add(3))+(1/50))); % i = 0.1458
+% iTest = V/(R_MTQ(3) + inv((1/R_add(3))+(1/100))); % i = 0.1431
+% iTest = V/(R_MTQ(3) + inv((1/R_add(3))+(1/200))); % i = 0.1416
+% iTest = V/(R_MTQ(3) + inv((1/R_add(3))+(1/1e3))); % i = 0.1403
+
+% iTest = V/(R_MTQ(3) + inv((1/(R_add(3)-1))+(1/1))); % i = 0.182
+% iTest = V/(R_MTQ(3) + inv((1/(R_add(3)-1))+(1/5))); % i = 0.1685
+% iTest = V/(R_MTQ(3) + inv((1/(R_add(3)-1))+(1/20))); % i = 0.1545
+% iTest = V/(R_MTQ(3) + inv((1/(R_add(3)-1))+(1/50))); % i = 0.1489
+% iTest = V/(R_MTQ(3) + inv((1/(R_add(3)-1))+(1/100))); % i = 0.1466
+% iTest = V/(R_MTQ(3) + inv((1/(R_add(3)-1))+(1/200))); % i = 0.1454
+% iTest = V/(R_MTQ(3) + inv((1/(R_add(3)-1))+(1/1e3))); % i = 0.1443
+
+% iTest = V/(R_MTQ(3) + inv((1/(R_add(3)+1))+(1/1))) % i = 0.1819
+% iTest = V/(R_MTQ(3) + inv((1/(R_add(3)+1))+(1/5))) % i = 0.1671
+% iTest = V/(R_MTQ(3) + inv((1/(R_add(3)+1))+(1/20))) % i = 0.1501
+% iTest = V/(R_MTQ(3) + inv((1/(R_add(3)+1))+(1/50))) % i = 0.1428
+% iTest = V/(R_MTQ(3) + inv((1/(R_add(3)+1))+(1/100))) % i = 0.1397
+% iTest = V/(R_MTQ(3) + inv((1/(R_add(3)+1))+(1/200))) % i = 0.1380
+% iTest = V/(R_MTQ(3) + inv((1/(R_add(3)+1))+(1/1e3))) % i = 0.1366
+
+% Maybe just find a 0-20 Ohm 1.5W trimmer pot. or parallel 2 0-50 1W
+% trimmer pots, 0r 0-100 1W.
