@@ -79,3 +79,42 @@ I_L = 3.6./Z;
 
 V_R = I_L.*X_L;
 % 0.1922 0.3827 0.9296 1.6971 2.6292 3.0548 3.4368
+
+%% MTQ Values Calcs
+% From testing on 9/12/2022 on MTQ3 on new circuitry (replaced burnt
+% resistor)
+% Intend to install adjustable resistor in parallel with current
+% resistors to tune circuit to flow 0.140 A through MTQ.
+
+%              .... R3 ....   
+% + ... conn ..|..R1..R2..|.. MTQ .... -
+
+% Taken April 5th 2022 using Fluke 45 bench DMM
+R_MTQ = [26.5 27.4 26.58];
+% Supplemental current limiting resistance added. Values approximate
+R_add = [9.2143    8.3143    9.1343];
+
+V = 5.00; 
+I = 0.150;    % 0.120       0.115 A Expect resistance in meter conn.
+R_tot = V/I;  % 41.6667     43.4783
+R_ideal = 5/0.14;   % Checks with line 23, 17+24 R+Rd = 35.7143
+
+% Rconn = inv((1/r3) + (1/(r1+r2))) + R_MTQ;
+% 1/R = 1/r1 + 1/r2
+
+R3_err = R_tot - R_ideal;   % Difference between ideal total 
+               % resistance and total resistance calc'd from V and I.
+R3_errR = R_tot - R_MTQ(3); % Apparent total connection and resistor 
+                            %   resistance as calc'd by V/I
+% 1/R_supplemental = 1/r3(aka r_req + 1/(r1+r2)(aka R3_errR)
+R_req = 1/((1/R_add(3)) - (1/R3_errR));
+
+Rtest = inv((1/R_req) + (1/R3_errR));
+
+% I = 0.12 --> R_req = 23.1515
+% I = 0.11 --> R_req = 17.704
+% I = 0.14 --> R_req = -5.8 M Ohm
+% I = 0.15 --> R_req = -25.9084
+
+0-100 or 0-1000 Ohm variable resistor should work if the resistance 
+values are actually incorrect and not just a bad connection. 
