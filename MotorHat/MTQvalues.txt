@@ -145,3 +145,37 @@ values are actually incorrect and not just a bad connection.
 
 % Maybe just find a 0-20 Ohm 1.5W trimmer pot. or parallel 2 0-50 1W
 % trimmer pots, 0r 0-100 1W.
+
+
+MTQ 3 Testing 9/19/22
+
+R&S HMC8043 PSU to Fluke 45 Bench DMM. 
+In mA outlet, common and V.
+  PSU.                  DMM
+  V   I (mA)     V(mV)         I (mA) 
+0.100  8.0    97.18-97.36    7.980-8.022
+0.200  15.9  193.89-194.06  16.005-16.024
+1.000  79.6   9687-9691 mV  79.73 - 79.74
+
+In 10A outlet
+0.1 V PSU >.14A
+0.010 V = 40 mA. Meter says 2.92 mV 0.040 A
+0.020 81.9-84.3 mA, 81-84 mA
+
+
+PSU to Fluke 45 meter to MTQ3
+
+    PSU           Fluke45
+V        I       V       I
+0.300  0.1 mA  0.3004  0.139 mA
+1.000  17.7-19.0 mA 0.9875 18.96-19.03 mA
+1.000  0.0312          0.031 A
+1.000  0.0295  0.9875  0.029
+2.000  0.0667  1.9729  0.066
+3.000  0.1020  2.9581  0.102
+4.000  0.1361  3.872   0.135
+
+
+
+
+
