@@ -176,6 +176,74 @@ V        I       V       I
 4.000  0.1361  3.872   0.135
 
 
+9/23
+Fluke 45, zeroed, measured with Dupont connectors on pins into 
+    MTQ board.
+MTQ resistance
+1: 35.20
+2: 35.90
+3: 35.20
 
 
+9/26 Trimmer pots measurements
+Bourns 3262 
+X502 
+5.173 kOhm
+0.15 - max. jumps at low end
 
+Spectrol 74x 500 Ohm
+493
+0.19 - max
+very accurate and linear at low end to max
+
+BI 64 9940
+YR500
+500 Ohm
+0.24 - 500
+linear and accurate at low end and through.
+
+BI 67 YR200 9601
+201.13
+0.32 - 5 finnicky.5 - 200 linear, predictable and accurate
+
+BI 84 9543 WR2K
+2.1 k
+linear at low end but steep curve
+
+75LR200
+0.56 - 189
+Many turns. Very linear at all points.
+
+MTQ2 = 28.98 - 27.2
+35.20 = inv(1/8.17 + 1/?) + 28.98
+35.20 - 29 = 1/((1/8.17) + (1/?))
+(1/8.17) + (1/?) = 1/6.2
+1/? = (1/8.17) + (1/6.2)
+? = inv((1/8.17) + (1/6.2))
+R = 3.525 - 4.21
+
+Did I do some math wrong?
+
+9/23
+Fluke 45, zeroed, measured with Dupont connectors on pins into 
+    MTQ board.
+MTQ resistance
+35.91 
+35.26 
+35.80
+unzeroed
+36.75
+36.15
+36.68
+
+Measure another way.
+R&S 8043 PSU
+CH1 set to 5VDC max 0.180 A
+Leads out w/alligator clips to Dupont connectors to board connector pins
+MTQ#   Current out at 5.000 VDC
+       0       1       2  minutes
+MTQ1   136.0 - 135.4 - 135.1  mA
+MTQ2   138.3 - 137.7 - 137.3  mA
+MTQ3   136.3 - 135.9 - 135.6  mA
+
+Buy those 100 Ohm or less trimmer pots.
