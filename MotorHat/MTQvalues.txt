@@ -247,3 +247,9 @@ MTQ2   138.3 - 137.7 - 137.3  mA
 MTQ3   136.3 - 135.9 - 135.6  mA
 
 Buy those 100 Ohm or less trimmer pots.
+
+Nov. 17, 2022
+Installed 100k trimmer pots and adjusted such that 5.000 VDC from PSU
+shows 140mA running though circuit for each of the 3 MTQ circuits.
+Current shown by PSU and range was ~138-141 mA. Fluctuating for 
+each axis as PSU attempted to maintain 5.000 VDC in ckt.
