@@ -35,32 +35,32 @@ def imu(timeStamp):
 
 
 def main():
-	#---------------Creating a reference object to the supported MinIMU_v5_pi class------------
-	
-	#---------------Initiate tracking of moment of each direction on the IMU--------------------
-	'''IMU.trackYaw()''' #This is for testing the yaw output
-	IMU.trackAngle()
-	IMU.readGyro()
-	IMU.readAccelerometer()
-	IMU.readMagnetometer()
-	
-# 	f = open("/home/pi/Desktop/IMU/IMU FILES THAT JARRED COPIED/IMU.csv", 'a', newline='') # CHANGED - location and format
+    #---------------Creating a reference object to the supported MinIMU_v5_pi class------------
+    
+    #---------------Initiate tracking of moment of each direction on the IMU--------------------
+    '''IMU.trackYaw()''' #This is for testing the yaw output
+    IMU.trackAngle()
+    IMU.readGyro()
+    IMU.readAccelerometer()
+    IMU.readMagnetometer()
+
+    #f = open("/home/pi/Desktop/IMU/IMU FILES THAT JARRED COPIED/IMU.csv", 'a', newline='') # CHANGED - location and format
 #     writer = csv.writer(f)
-	
-	x = 0
-	#-------------This parralellizes the code to distribute the functions to all-------------
+    
+    x = 0
+    #-------------This parralellizes the code to distribute the functions to all-------------
     #-------------four cores of the Rasberry Pi.----------------------------------------------
-	with pymp.Parallel(4) as p:     
-		while True:
+    with pymp.Parallel(4) as p:     
+        while True:
             fileNow = datetime.now()
             fileStamp = fileNow.strftime("%H:%M:%S")
             
             for x in p.range(0, 100000): #We can use for loop for now until the while loop works
                 dataNow = datetime.now()
                 currentTime = dataNow.strftime("%H:%M:%S.%f")
-                f = open("/home/pi/Desktop/IMU/IMU FILES THAT JARRED COPIED/outputTest/IMU_" + str(fileStamp) + ".csv", 'a', newline='')
+#                 f = open("/home/pi/Desktop/IMU/IMU FILES THAT JARRED COPIED/outputTest/IMU_" + str(fileStamp) + ".csv", 'a', newline='')
                 
-                writer = csv.writer(f)
+#                 writer = csv.writer(f)
                 '''YAW = IMU.prevYaw[0]''' #This is for testing the yaw output
                 RoPiYa = IMU.prevAngle[0]
 
@@ -68,12 +68,12 @@ def main():
                 print(imu(currentTime))
                 
                 #----------------------Outputs data into a csv file----------------------------------------
-                writer.writerow(imu(currentTime))
+#                 writer.writerow(imu(currentTime))
                 
                 #----------------------Allocates time to sleep in between readings-------------------------
-                f.close() # close necessary in for loop as it saves data without having to break loop
+#                 f.close() # close necessary in for loop as it saves data without having to break loop
                 time.sleep(0.01)
-			
+
 
 if __name__ == "__main__":
    main()
