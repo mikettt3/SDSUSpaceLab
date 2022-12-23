@@ -23,7 +23,6 @@ print('Start')
 kit = MotorKit()
 
 step = 1/10
-ramp = step/1
 xRange = int(1/step)
 
 # 0V for 10 secs
@@ -32,7 +31,7 @@ sleep(10)
 
 # ramp 5V for 1 sec
 for i in range(xRange):
-    kit.motor1.throttle = (ramp*i)
+    kit.motor1.throttle = (step*i)
     sleep(step)
 
 # 5V for 10 sec
@@ -41,7 +40,7 @@ sleep(10)
 
 # ramp 0V for 1 sec
 for i in range(xRange):
-    kit.motor1.throttle = 1 - (ramp*i)
+    kit.motor1.throttle = 1 - (step*i)
     sleep(step)
 
 # 0V for 10 secs
@@ -50,7 +49,7 @@ sleep(10)
 
 # ramp to -5V for 1 sec
 for i in range(xRange):
-    kit.motor1.throttle = 0 - (ramp*i)
+    kit.motor1.throttle = 0 - (step*i)
     sleep(step)
 
 # -5V for 10 sec
@@ -59,7 +58,7 @@ sleep(10)
 
 # ramp 0V for 1 sec
 for i in range(xRange):
-    kit.motor1.throttle = -1 + (ramp*i)
+    kit.motor1.throttle = -1 + (step*i)
     sleep(step)
 
 # 0V for 10 secs
