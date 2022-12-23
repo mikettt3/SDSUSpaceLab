@@ -30,42 +30,42 @@ print(MBatt, '(add #, Volts DC)')
 # Reset encoders. Command 20 Pg 87
 roboclaw.ResetEncoders(address1)
 
-# Read PID Commands 55,56,63,64. pg 98,99
-M1V_PID = roboclaw.ReadM1VelocityPID(address1)
-M2V_PID = roboclaw.ReadM2VelocityPID(address1)
-M1P_PID = roboclaw.ReadM1PositionPID(address1)
-M2P_PID = roboclaw.ReadM2PositionPID(address1)
-print(M1V_PID, 'M1V_PID [P I D QPPS CRC]')
-print(M2V_PID, 'M2V_PID [P I D QPPS CRC]')
-print(M1P_PID, 'M1P_PID [P I D MaxI Deadzone MinPos MaxPos CRC]')
-print(M2P_PID, 'M2P_PID [P I D MaxI Deadzone MinPos MaxPos CRC]')
+# # Read PID Commands 55,56,63,64. pg 98,99
+# M1V_PID = roboclaw.ReadM1VelocityPID(address1)
+# M2V_PID = roboclaw.ReadM2VelocityPID(address1)
+# M1P_PID = roboclaw.ReadM1PositionPID(address1)
+# M2P_PID = roboclaw.ReadM2PositionPID(address1)
+# print(M1V_PID, 'M1V_PID [P I D QPPS CRC]')
+# print(M2V_PID, 'M2V_PID [P I D QPPS CRC]')
+# print(M1P_PID, 'M1P_PID [P I D MaxI Deadzone MinPos MaxPos CRC]')
+# print(M2P_PID, 'M2P_PID [P I D MaxI Deadzone MinPos MaxPos CRC]')
 
-# Command motors with SpeedAccelM1/M2/M1M2
-# Command 38,39,40. Pg 93-94
-# SpeedAccelM1/M2(self,address,accel,speed)
-# SpeedAccelM1M2(self,address,accel,speed1,speed2)
-# Values in QPPS. Accel [QPPS/Sec]; speed [QPPS]
-# Recall 48 QPP for one full motor rotation, 211.2 for 1 full wheel rotation
-roboclaw.SpeedAccelM1(address1,48,24)
-sleep(txl)
-roboclaw.SpeedAccelM2(address1,48,-211)
-sleep(txl)
-roboclaw.SpeedAccelM1M2(address1,48,48,96)
-sleep(txl)
-print('End Command motors with SpeedAccel')
+# # Command motors with SpeedAccelM1/M2/M1M2
+# # Command 38,39,40. Pg 93-94
+# # SpeedAccelM1/M2(self,address,accel,speed)
+# # SpeedAccelM1M2(self,address,accel,speed1,speed2)
+# # Values in QPPS. Accel [QPPS/Sec]; speed [QPPS]
+# # Recall 48 QPP for one full motor rotation, 211.2 for 1 full wheel rotation
+# roboclaw.SpeedAccelM1(address1,48,24)
+# sleep(txl)
+# roboclaw.SpeedAccelM2(address1,48,-211)
+# sleep(txl)
+# roboclaw.SpeedAccelM1M2(address1,48,48,96)
+# sleep(txl)
+# print('End Command motors with SpeedAccel')
 
-# Command motors with SpeedAccelM1/M2/M1M2_2
-# Command 50. Pg 97
-# def SpeedAccelM1M2_2(self,address,accel1,speed1,accel2,speed2)
-# Values should be in QPPS
-roboclaw.SpeedAccelM1M2_2(address1,422,   1,422,   1)
-sleep(tl)
-roboclaw.SpeedAccelM1M2_2(address1,422,  -1,422,  -1)
-sleep(tl)
-roboclaw.SpeedAccelM1M2_2(address1,422,   0,422,   0)
-sleep(tl)
-print('End Command motors with SpeedAccel_2')
-
+# # Command motors with SpeedAccelM1/M2/M1M2_2
+# # Command 50. Pg 97
+# # def SpeedAccelM1M2_2(self,address,accel1,speed1,accel2,speed2)
+# # Values should be in QPPS
+# roboclaw.SpeedAccelM1M2_2(address1,422,   1,422,   1)
+# sleep(tl)
+# roboclaw.SpeedAccelM1M2_2(address1,422,  -1,422,  -1)
+# sleep(tl)
+# roboclaw.SpeedAccelM1M2_2(address1,422,   0,422,   0)
+# sleep(tl)
+# print('End Command motors with SpeedAccel_2')
+# 
 # Command motor motion with Forward/BackwardM1/M2()
 # Commands 0,1,4,5. Pg63-64
 # Valid data range is 0-127. 127=full speed; 64=1/2 speed; 0=stop.
