@@ -100,8 +100,30 @@ sleep(txl)
 
 # if deviation larger than 3*std then rotate back. Just watch yaw for live demo.
 
-
-
+'''
+while()
+   currentStd = # Obtain current std
+   currentAve = # Obtain current average
+   currentPos = # Obtain current yaw value
+   
+   devMax = currentAve + 3*currentStd
+   devMin = currentAve - 3*currentStd
+   
+   speedCor = 5 # speed to correct position due to yaw data noise
+   speedCorRev = -1*speedCor
+   
+   if(currentPos > devMax)
+        roboclaw.ReverseM1(address1,speedCor)
+        roboclaw.ReverseM2(address1,speedCor)
+        roboclaw.ReverseM1(address2,speedCor)
+        roboclaw.ReverseM2(address2,speedCor)
+    
+    if(currentPos < devMin)
+        roboclaw.ForwardM1(address1,speedCorRev)
+        roboclaw.ForwardM2(address1,speedCorRev)
+        roboclaw.ForwardM1(address2,speedCorRev)
+        roboclaw.ForwardM2(address2,speedCorRev)
+'''
 
 
 
