@@ -42,6 +42,7 @@ K_rxn    = int(1)
 mDrive   = int(64)
 yawGyro0 = int(0)
 yawMag0  = int(0)
+yawDrive  = int(64)
 
 ''' ------------------------------------------------'''
 # Definitions
@@ -57,24 +58,22 @@ def imu(timeStamp):
         # "%03.4f " % IMU.updateAngle()[2]    ]
     return data
 
-def DriveWheels(yawGyro0):
+def DriveWheels(yawDrive):
     # 0-127; 0-full reverse, 64-stop, 127-full forward
 
     # # Save as B
-    if yawGyro0 <= -150:
+    if yawDrive <= -150:
         mDrive = 127
-    elif (yawGyro0 > -150) and (yawGyro0 <= -16):
-        mDrive = 63-(yawGyro0*64/150)
-    elif (yawGyro0 > -16) and (yawGyro0 < 16):
+    elif (yawDrive > -150) and (yawDrive <= -16):
+        mDrive = np.round( 63-(yawDrive*64/150) )
+    elif (yawDrive > -16) and (yawDrive < 16):
         mDrive = 64
-    elif (yawGyro0 < 150) and (yawGyro0 >= 16):
-        mDrive = 64-(yawGyro0*64/150)
-    elif yawGyro0 >= 150:
+    elif (yawDrive < 150) and (yawDrive >= 16):
+        mDrive = np.round( 64-(yawDrive*64/150) )
+    elif yawDrive >= 150:
         mDrive = 0
     else:
-        print('Error in YGE loop');
-    
-    mDrive = round(mDrive);
+        print('Error in Drive loop');
 
     roboclaw.ForwardBackwardM1(address1,mDrive)
     roboclaw.ForwardBackwardM2(address1,mDrive)
@@ -189,28 +188,26 @@ while i<=(runtime-1):
     yawMag0[i+1,0]  = float(imuR[i,3]) - ZSA[0,2]
     # Z mag does not change when rotating about Z. X and Y do.
     
-    
-    
     # Estimate yaw error from gyro and mag.
 
-    if (abs(yawGyro0))>=(abs(3*ZSAstd[0,8])):
+    if (abs(yawGyro0[i+1]))>=(abs(3*ZSAstd[0,8])):
         # print('yawGyro0')
-        print(yawGyro0)
+#         print(yawGyro0[i+1])
         # Then correct attitude
         # Send error amount and direction to drive rxn wheels or mtqs
-        DriveWheels(yawGyro0)
+        DriveWheels(yawGyro0[i+1])
         # DriveMTQ1(yawMag0)
-    elif (abs(yawGyro0))<(abs(3*ZSAstd[0,8])):
+    elif (abs(yawGyro0[i+1]))<(abs(3*ZSAstd[0,8])):
         # print('Less than yaw error')
-        yawGyro0 = 0
-        yawMag0  = 0
-        DriveWheels(yawGyro0)
+        yawGyro0[i+1] = 0
+        yawMag0[i+1]  = 0
+        DriveWheels(yawGyro0[i+1])
     else:
         print('Error in while loop')
 
     # Output data into a csv file
     writer = csv.writer(f)
-    writer.writerow(imuR)
+    writer.writerows(imuR)
 
     # Time code run time. Quit if >15 min to prevent excessive runtime
     # Battery voltage check

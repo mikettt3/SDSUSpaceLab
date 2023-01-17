@@ -40,8 +40,8 @@ ts = 0.5 # short pause time
 DriveDir = int(0)
 K_rxn    = int(1)
 mDrive   = int(64)
-yawGyro0 = int(0)
-yawMag0  = int(0)
+# yawGyro0 = int(0)
+# yawMag0  = int(0)
 
 ''' ------------------------------------------------'''
 # Definitions
@@ -72,7 +72,7 @@ def DriveWheels(yawGyro):
     elif yawGyro >= 150:
         mDrive = 0
     else:
-        print('Error in YGE loop');
+        print('Error in Drive loop');
     
     mDrive = round(mDrive);
 
@@ -122,9 +122,10 @@ roboclaw.ResetEncoders(address2)
 
 # Check battery voltage
 battery()
+print(roboclaw.ReadMainBatteryVoltage(address1)[1])
 
 # Start IMU functions
-IMU.trackAngle()	# Line 421 in MinIMU_v5_pi.py
+# IMU.trackAngle()	# Line 421 in MinIMU_v5_pi.py
 '''Creates another thread which calls updateAngle every 4ms (250Hz)
     to track the current roll, pitch, and yaw. 
     Currently gives no return. Not sure why. -MS'''
@@ -136,7 +137,7 @@ IMU.readMagnetometer()
 
 # Log time
 tic = time.time()
-timeStamp = datetime.now().strftime("%H%M%S.%s")[0:6]
+timeStamp = datetime.now().strftime("%H%M%S.%f")
 
 # Log and filter IMU data and return single initial state array. Noise floor.
 ZSA    = np.empty((1,9))	# ZeroStateArray = [1x9]
@@ -169,21 +170,26 @@ print('Ready')
 	# Minimize yawSum
     
 sleeptime = 0.01
-runDur = 5
+dy = 5# yaw threshold for movement
+runDur = 15
 runtime = runDur/(10*sleeptime) # 15min * 60s = 900s
 i = 0
 timeStamp2 = np.empty((1,int(runtime+1)))
-timeStamp2[i] = datetime.now().strftime("%H%M%S.%s")[0:6]
-imuR     = np.empty((int(runtime),10))
-yawGyro0 = np.empty((int(runtime),1))
-yawMag0  = np.empty((int(runtime),1))
+timeStamp2[i] = datetime.now().strftime("%H%M%S%f")[0:9]
+# imuR     = np.empty((int(runtime),10))
+imuR     = np.zeros((int(runtime),11))
+yawGyro0 = np.empty((int(runtime+1),1))
+yawMag0  = np.empty((int(runtime+1),1))
 yawSum   = 0
+
 
 while i<=(runtime-1):
     # create time stamp for each data point
-    timeStamp2[0,i+1] = datetime.now().strftime("%H%M%S.%s")[0:6]
+    timeStamp2[0,i+1] = datetime.now().strftime("%H%M%S%f")[0:9]
     dt = timeStamp2[0,i+1] - timeStamp2[0,i]
-    imuR[i,:] = imu(timeStamp2[0,i+1])   # Read IMU
+    imuR[i,0:10] = imu(timeStamp2[0,i+1])   # Read IMU
+    # print(i)
+    # print(imuR)
 
     # Zero yaw data
     yawGyro0[i+1,0] = float(imuR[i,9]) - ZSA[0,8]
@@ -191,50 +197,28 @@ while i<=(runtime-1):
     # Z mag does not change when rotating about Z. X and Y do.
     
     yawdk = yawGyro0[i+1,0] - yawGyro0[i,0]
-    yawSum = yawSum + (yawdk*dt)
+    yawSum = yawSum + (yawdk*dt/20)
+    print(yawSum, dt)
+    
+    imuR[i,10] = yawSum
     
 	# Minimize yawSum
-    if (abs(yawSum))>=(abs(3*ZSAstd[0,8])):
+    if (abs(yawSum))>=dy: # (abs(3*ZSAstd[0,8]))
         # print('yawGyro0')
         print(yawSum)
         # Then correct attitude
         # Send error amount and direction to drive rxn wheels or mtqs
         DriveWheels(yawSum)
         # DriveMTQ1(yawMag0)
-    elif (abs(yawSum))<(abs(3*ZSAstd[0,8])):
+    elif (abs(yawSum))<dy: # (abs(3*ZSAstd[0,8]))
         # Stop motors from turning when not needed.
-        # print('Less than yaw error')
-        yawSum = 0
-        yawMag0 = 0
-        DriveWheels(yawSum)
+        DriveWheels(0)
     else:
         print('Error in while loop')
-    
-    # Estimate yaw error from gyro and mag.
-
-    # if (abs(yawGyro0))>=(abs(3*ZSAstd[0,8])):
-    #     # print('yawGyro0')
-    #     print(yawGyro0)
-    #     # Then correct attitude
-    #     # Send error amount and direction to drive rxn wheels or mtqs
-    #     DriveWheels(yawGyro0)
-    #     # DriveMTQ1(yawMag0)
-    # elif (abs(yawGyro0))<(abs(3*ZSAstd[0,8])):
-    #     # Stop motors from turning when not needed.
-    #     # print('Less than yaw error')
-    #     yawGyro0 = 0
-    #     yawMag0  = 0
-    #     DriveWheels(yawGyro0)
-    # else:
-    #     print('Error in while loop')
-
-    # Output data into a csv file
-    writer = csv.writer(f)
-    writer.writerow(imuR)
-
-    # Time code run time. Quit if >15 min to prevent excessive runtime
+  
     # Battery voltage check
     battery()
+    # Time code run time. Quit if >15 min to prevent excessive runtime
     # toc = time.time()
     # if (toc-tic)> runDur:
         # print('Check runtime. Exiting soon')
@@ -246,6 +230,11 @@ while i<=(runtime-1):
 
 
 ''' ------------------------------------------------'''
+print('End loop')
+
+# Output data into a csv file
+writer = csv.writer(f)
+writer.writerows(imuR)
 
 '''Kill motors and print done'''
 stopAll()
