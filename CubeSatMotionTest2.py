@@ -73,6 +73,20 @@ def DriveWheels(yawGyro):
         mDrive = 0
     else:
         print('Error in Drive loop');
+	
+#    # # Save as A
+#    if yawGyro <= -150:
+#        mDrive = 0
+#    elif (yawGyro > -150) and (yawGyro <= -16):
+#        mDrive = 64+(yawGyro*64/150)
+#    elif (yawGyro > -16) and (yawGyro < 16):
+#        mDrive = 64
+#    elif (yawGyro < 150) and (yawGyro >= 16):
+#        mDrive = 63+(yawGyro*64/150)
+#    elif yawGyro >= 150:
+#        mDrive = 127
+#    else:
+#        print('Error in Drive loop');
     
     mDrive = round(mDrive);
 
