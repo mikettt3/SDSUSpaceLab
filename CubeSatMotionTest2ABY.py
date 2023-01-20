@@ -29,10 +29,16 @@ roboclaw.Open()      # Start communication with Roboclaw for motor full control
 kit = MotorKit()     # Start communication with MotorHat for magnetorquer control.
 IMU = MinIMU_v5_pi() # Start IMU communication
 
+# Make file for MotionTest.csv to save IMU data
 fileDateTime = datetime.now().strftime("%y%b%d%H%M.%s")
 fileName = "/home/pi/Desktop/Mike/SDSUSpaceLabADCS_Testbed/MotionTestCSV/MotionTest"
 fileName = fileName+fileDateTime[0:7]+"_"+fileDateTime[7:11]+".csv"
 f = open(fileName, 'w', newline='')
+
+# Make file for YawGyro0
+YG0_FN = "/home/pi/Desktop/Mike/SDSUSpaceLabADCS_Testbed/MotionTestCSV/YawGyro0"
+YG0_FN = YG0_FN+fileDateTime[0:7]+"_"+fileDateTime[7:11]+".csv"
+g = open(YG0_FN, 'w', newline='')
 
 txl = 5  # extra long pause
 tl = 2   # long pause time
@@ -60,34 +66,34 @@ def imu(timeStamp):
 def DriveWheels(yawGyro):
     # 0-127; 0-full reverse, 64-stop, 127-full forward
 
-    # # Save as A
-    if yawGyro <= -150:
-       mDrive = 0
-    elif (yawGyro > -150) and (yawGyro <= -16):
-       mDrive = 64+(yawGyro*64/150)
-    elif (yawGyro > -16) and (yawGyro < 16):
-       mDrive = 64
-    elif (yawGyro < 150) and (yawGyro >= 16):
-       mDrive = 63+(yawGyro*64/150)
-    elif yawGyro >= 150:
-       mDrive = 127
-    else:
-       print('Error in Drive loop');
+#    # # Save as A
+#    if yawGyro <= -150:
+#       mDrive = 0
+#    elif (yawGyro > -150) and (yawGyro <= -16):
+#       mDrive = 64+(yawGyro*64/150)
+#    elif (yawGyro > -16) and (yawGyro < 16):
+#       mDrive = 64
+#    elif (yawGyro < 150) and (yawGyro >= 16):
+#       mDrive = 63+(yawGyro*64/150)
+#    elif yawGyro >= 150:
+#       mDrive = 127
+#    else:
+#       print('Error in Drive loop');
 
-#     # # Save as B
-#     if yawGyro <= -150:
-#         mDrive = 127
-#     elif (yawGyro > -150) and (yawGyro <= -16):
-#         mDrive = 63-(yawGyro*64/150)
-#     elif (yawGyro > -16) and (yawGyro < 16):
-#         mDrive = 64
-#     elif (yawGyro < 150) and (yawGyro >= 16):
-#         mDrive = 64-(yawGyro*64/150)
-#     elif yawGyro >= 150:
-#         mDrive = 0
-#     else:
-#         print('Error in Drive loop');
-	
+    # # Save as B
+    if yawGyro <= -150:
+        mDrive = 127
+    elif (yawGyro > -150) and (yawGyro <= -16):
+        mDrive = 63-(yawGyro*64/150)
+    elif (yawGyro > -16) and (yawGyro < 16):
+        mDrive = 64
+    elif (yawGyro < 150) and (yawGyro >= 16):
+        mDrive = 64-(yawGyro*64/150)
+    elif yawGyro >= 150:
+        mDrive = 0
+    else:
+        print('Error in Drive loop');
+
 
 
     mDrive = round(mDrive);
@@ -102,7 +108,7 @@ def battery():
     if roboclaw.ReadMainBatteryVoltage(address1)[1] <= 136:
         print('!!!!!!!!!!!!!!!!!Warning!!!!!!!!!!!!!!!!!')
         print('MAIN BATTERY LOW')
-        sleep(txl)
+        sleep(tl)
         if roboclaw.ReadMainBatteryVoltage(address1)[1] <= 132:
             print('Exiting')
             stopAll()
@@ -186,8 +192,11 @@ print('Ready')
 	# Minimize yawSum
     
 sleeptime = 0.01
-dy = 5# yaw threshold for movement
-runDur = 15
+dy = .005 # yaw threshold for movement
+K = 1 # gain
+K1 = 5 # gain for wdot 
+K2 = 5 # gain for w
+runDur = 30
 runtime = runDur/(10*sleeptime) # 15min * 60s = 900s
 i = 0
 timeStamp2 = np.empty((1,int(runtime+1)))
@@ -199,10 +208,11 @@ yawMag0  = np.empty((int(runtime+1),1))
 yawSum   = 0
 
 
+
 while i<=(runtime-1):
-    # create time stamp for each data point
+    # create time stamp for each data point(HHMMSS(6 fig microseconds))
     timeStamp2[0,i+1] = datetime.now().strftime("%H%M%S%f")[0:9]
-    dt = timeStamp2[0,i+1] - timeStamp2[0,i]
+    dt = (timeStamp2[0,i+1] - timeStamp2[0,i])/1000
     imuR[i,0:10] = imu(timeStamp2[0,i+1])   # Read IMU
     # print(i)
     # print(imuR)
@@ -212,25 +222,32 @@ while i<=(runtime-1):
     yawMag0[i+1,0]  = float(imuR[i,3]) - ZSA[0,2]
     # Z mag does not change when rotating about Z. X and Y do.
     
-    yawdk = yawGyro0[i+1,0] - yawGyro0[i,0]
-    yawSum = yawSum + (yawdk*dt/20)
-    print(yawSum, dt)
+    # yawdk = yawGyro0[i+1,0] - yawGyro0[i,0]
+    # yawSum = yawSum + (yawdk*dt)
+    cntrl = K1*yawGyro0[i+1,0] + K2*yawMag0[i+1,0]
+    yawSum = yawSum + (cntrl*dt)
+    # yawSum = K1*yawGyro0[i+1,0] + K2*yawMag0[i+1,0]
+    # yawSum = K2*(yawSum) 
+    print(yawSum, dt, yawMag0[i+1,0] )
     
-    imuR[i,10] = yawSum
+    DriveWheels(yawSum)
+
+    
+    # imuR[i,10] = yawSum
     
 	# Minimize yawSum
-    if (abs(yawSum))>=dy: # (abs(3*ZSAstd[0,8]))
-        # print('yawGyro0')
-        print(yawSum)
-        # Then correct attitude
-        # Send error amount and direction to drive rxn wheels or mtqs
-        DriveWheels(yawSum)
-        # DriveMTQ1(yawMag0)
-    elif (abs(yawSum))<dy: # (abs(3*ZSAstd[0,8]))
-        # Stop motors from turning when not needed.
-        DriveWheels(0)
-    else:
-        print('Error in while loop')
+    # if (abs(yawSum*K))>=dy: # (abs(3*ZSAstd[0,8]))
+        # # print('yawGyro0')
+        # print(yawSum)
+        # # Then correct attitude
+        # # Send error amount and direction to drive rxn wheels or mtqs
+        # DriveWheels(yawSum*K)
+        # # DriveMTQ1(yawMag0)
+    # elif (abs(yawSum*K))<dy: # (abs(3*ZSAstd[0,8]))
+        # # Stop motors from turning when not needed.
+        # DriveWheels(0)
+    # else:
+        # print('Error in while loop')
   
     # Battery voltage check
     battery()
@@ -248,9 +265,13 @@ while i<=(runtime-1):
 ''' ------------------------------------------------'''
 print('End loop')
 
-# Output data into a csv file
+# Output imu data into a csv file
 writer = csv.writer(f)
 writer.writerows(imuR)
+
+# Output yawGyro0 data into a csv file
+writer = csv.writer(g)
+writer.writerows(yawGyro0)
 
 '''Kill motors and print done'''
 stopAll()
