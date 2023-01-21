@@ -89,6 +89,11 @@ def DriveWheels(yawGyro):
         mDrive = 63-(yawGyro*64/thresholdHi)
     elif (yawGyro > -threshLo) and (yawGyro < threshLo):
         mDrive = 64
+        # Prefer coast command here.
+        roboclaw.SetM1MaxCurrent(address1,0)
+        roboclaw.SetM2MaxCurrent(address1,0)
+        roboclaw.SetM1MaxCurrent(address2,0)
+        roboclaw.SetM2MaxCurrent(address2,0)
     elif (yawGyro < thresholdHi) and (yawGyro >= threshLo):
         mDrive = 64-(yawGyro*64/thresholdHi)
     elif yawGyro >= thresholdHi:
@@ -142,6 +147,12 @@ roboclaw.SetM2VelocityPID(address2,3,1,0,7125)
 roboclaw.ResetEncoders(address1)
 roboclaw.ResetEncoders(address2)
 
+# Set max current to deliver to motors
+roboclaw.SetM1MaxCurrent(address1,700)
+roboclaw.SetM2MaxCurrent(address1,700)
+roboclaw.SetM1MaxCurrent(address2,700)
+roboclaw.SetM2MaxCurrent(address2,700)
+
 # Check battery voltage
 battery()
 print(roboclaw.ReadMainBatteryVoltage(address1)[1])
@@ -194,7 +205,7 @@ print('Ready')
 sleeptime = 0.01
 dy = 5 # yaw threshold for movement
 K = 10 # gain
-runDur = 30
+runDur = 10
 runtime = runDur/(10*sleeptime) # 15min * 60s = 900s
 i = 0
 timeStamp2 = np.empty((1,int(runtime+1)))
@@ -209,11 +220,20 @@ yawSum   = 0
 
 while i<=(runtime-1):
     # create time stamp for each data point(HHMMSS(6 fig microseconds))
+    # Recommend time.time command instead of datetime.bullshit
     timeStamp2[0,i+1] = datetime.now().strftime("%H%M%S%f")[0:9]
     dt = (timeStamp2[0,i+1] - timeStamp2[0,i])/1000
     imuR[i,0:10] = imu(timeStamp2[0,i+1])   # Read IMU
     # print(i)
     # print(imuR)
+    
+    # Make sure we can still send power to RCs.
+    maxI1 = roboclaw.ReadM1MaxCurrent(address1)
+    if maxI1[1]<1:
+        roboclaw.SetM1MaxCurrent(address1,700)
+        roboclaw.SetM2MaxCurrent(address1,700)
+        roboclaw.SetM1MaxCurrent(address2,700)
+        roboclaw.SetM2MaxCurrent(address2,700)
 
     # Zero yaw data
     yawGyro0[i+1,0] = float(imuR[i,9]) - ZSA[0,8]
@@ -266,6 +286,7 @@ writer = csv.writer(g)
 writer.writerows(yawGyro0)
 
 '''Kill motors and print done'''
+sleep(2)
 stopAll()
 f.close()
 print('Done')
