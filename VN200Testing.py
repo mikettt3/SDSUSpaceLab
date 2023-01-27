@@ -17,6 +17,8 @@ import time
 s = VnSensor()
 s.connect('/dev/ttyUSB0', 115200)
 
+print(s.read_angular_rate_measurements())
+
 # # print(s.read_model_number())
 # # print(s.read_yaw_pitch_roll())
 # ypr = s.read_yaw_pitch_roll()
@@ -28,7 +30,6 @@ s.connect('/dev/ttyUSB0', 115200)
 # # 	  vec3f([ -75.511, 4.101, -2.628 ])
 # # 	  -75.51100158691406 4.10099983215332 -2.628000020980835'''
 
-'''
 # Reads the Async Data Output Frequency register.
 # Hz = s.read_async_data_output_frequency('/dev/ttyUSB0')
     # # return _libvncxx.VnSensor_read_async_data_output_frequency(self, *args)
@@ -39,6 +40,7 @@ s.connect('/dev/ttyUSB0', 115200)
 # Hz = s.readAsyncDataOutputFrequency('/dev/ttyUSB0')
 # # AttributeError: 'VnSensor' object has no attribute 'readAsyncDataOutputFrequency'
 
+'''
 s.write_async_data_output_frequency(40) # Refresh rate (40 Hz) default for async data
 Hz = s.read_async_data_output_frequency()
 print(Hz)
@@ -52,10 +54,10 @@ I guess data frequency doesn't matter
 '''
 
 
-for i in range(0, 100):
-	print(time.time()) # .strftime("%H%M%S%f")[6:14])
-	# Luke We need YPR, MAGXYZ, angular rates (omega_dot)
-	reg = s.read_yaw_pitch_roll_magnetic_acceleration_and_angular_rates()
+# for i in range(0, 100):
+	# print(time.time())
+	# # Luke We need YPR, MAGXYZ, angular rates (omega_dot)
+	# reg = s.read_yaw_pitch_roll_magnetic_acceleration_and_angular_rates()
 
 	# print(reg.accel.x, reg.accel.y, reg.accel.z)
 	# print(reg.gyro.x, reg.gyro.y, reg.gyro.z)

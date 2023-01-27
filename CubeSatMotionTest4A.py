@@ -163,7 +163,7 @@ ZSAstd = np.empty((1,12))	# Standard deviation of ISA columns
 ISA    = np.empty((100,13))	# InitialStateArray = [100x9]
 for x in range(0, 100):
     reg =  s.read_yaw_pitch_roll_magnetic_acceleration_and_angular_rates() #imu(timeStamp)
-    ISA[x,:] = [timeStamp, 
+    ISA[x,:] = [time.time(), 
         reg.mag.x, reg.mag.y, reg.mag.z,
         reg.accel.x, reg.accel.y, reg.accel.z,
         reg.gyro.x, reg.gyro.y, reg.gyro.z,
@@ -187,7 +187,7 @@ dy = 1 # yaw threshold for movement
 K = 2e3 # YawSum gain just for control. Helps fix smol dt
 K1 = 0.1
 K2 = 0.1
-runDur = 30
+runDur = 10
 runtime = runDur/(10*sleeptime) # 15min * 60s = 900s
 i = 0
 timeStamp2 = np.empty((1,int(runtime+1)))
@@ -212,7 +212,7 @@ while i<=(runtime-1):
 
     # Read IMU
     reg = s.read_yaw_pitch_roll_magnetic_acceleration_and_angular_rates()
-    imuR[i,:] = [timeStamp, 
+    imuR[i,:] = [timeStamp2[0,i+1], 
         reg.mag.x, reg.mag.y, reg.mag.z,
         reg.accel.x, reg.accel.y, reg.accel.z,
         reg.gyro.x, reg.gyro.y, reg.gyro.z,
