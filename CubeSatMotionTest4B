@@ -203,72 +203,77 @@ Rotated  = 0    # Is CubeSat rotated by the rxn wheels yet?
 dA = 90  # delta  angle
 refA = 0 # desired yaw angle (ref)
 
+try:
+	while i<=(runtime-1):
+	    # Create time stamp for each data point(HHMMSS(6 fig microseconds))
+	    # Recommend time.time command instead of datetime.xxxxx
+	    timeStamp2[0,i+1] = datetime.now().strftime("%H%M%S%f")[0:9]
+	    dt = (timeStamp2[0,i+1] - timeStamp2[0,i])/1000
 
-while i<=(runtime-1):
-    # Create time stamp for each data point(HHMMSS(6 fig microseconds))
-    # Recommend time.time command instead of datetime.xxxxx
-    timeStamp2[0,i+1] = datetime.now().strftime("%H%M%S%f")[0:9]
-    dt = (timeStamp2[0,i+1] - timeStamp2[0,i])/1000
+	    # Read IMU
+	    reg = s.read_yaw_pitch_roll_magnetic_acceleration_and_angular_rates()
+	    imuR[i,:] = [timeStamp2[0,i+1], 
+		reg.mag.x, reg.mag.y, reg.mag.z,
+		reg.accel.x, reg.accel.y, reg.accel.z,
+		reg.gyro.x, reg.gyro.y, reg.gyro.z,
+		reg.yaw_pitch_roll.x, reg.yaw_pitch_roll.y, reg.yaw_pitch_roll.z]
+	    # print(imuR[i])
 
-    # Read IMU
-    reg = s.read_yaw_pitch_roll_magnetic_acceleration_and_angular_rates()
-    imuR[i,:] = [timeStamp2[0,i+1], 
-        reg.mag.x, reg.mag.y, reg.mag.z,
-        reg.accel.x, reg.accel.y, reg.accel.z,
-        reg.gyro.x, reg.gyro.y, reg.gyro.z,
-        reg.yaw_pitch_roll.x, reg.yaw_pitch_roll.y, reg.yaw_pitch_roll.z]
-    # print(imuR[i])
+	    # Zero yaw data bias
+	    # refA = ZSA[0,9] + dA
+	    yawGyro0[i+1,0] = imuR[i,9] - ZSA[0,8]
+	    # yaw0[i+1,0] = float(imuR[i,10]) - refA #ZSA[0,9]
+	    # Z mag does not change when rotating about Z. X and Y do.
 
-    # Zero yaw data bias
-    # refA = ZSA[0,9] + dA
-    yawGyro0[i+1,0] = imuR[i,9] - ZSA[0,8]
-    # yaw0[i+1,0] = float(imuR[i,10]) - refA #ZSA[0,9]
-    # Z mag does not change when rotating about Z. X and Y do.
-    
-    yawdk = yawGyro0[i+1,0] - yawGyro0[i,0]
-    yawSum = yawSum + (yawdk*dt)
-    # yawSum = K1*yawGyro0[i+1,0]  +  K2*yaw0[i+1,0]
-    ''' Steps for Jan 26:
-    tune controller and gains using only gyro.
-    implement yaw angles
-    tune again. '''
+	    yawdk = yawGyro0[i+1,0] - yawGyro0[i,0]
+	    yawSum = yawSum + (yawdk*dt)
+	    # yawSum = K1*yawGyro0[i+1,0]  +  K2*yaw0[i+1,0]
+	    ''' Steps for Jan 26:
+	    tune controller and gains using only gyro.
+	    implement yaw angles
+	    tune again. '''
 
-    print(yawSum, reg.yaw_pitch_roll.x) #, yawGyro0[i+1,0]) #, yaw0[i+1,0] )
-    
-    
-	# Minimize yawSum
-    if (abs(yawSum*K))>=dy: 
-        # print('yawGyro0')
-#         print(yawSum*K)
-        # Then correct attitude
-        # Send error amount and direction to drive rxn wheels or mtqs
-        DriveWheels(yawSum*K)
-        # DriveMTQ1(yawMag0)
-    elif (abs(yawSum*K))<dy: 
-        # Stop motors from turning when not needed.
-        DriveWheels(0)
-    else:
-        print('Error in while loop')
-  
-    # Battery voltage check
-    battery()
-    # Time code run time. Quit if >15 min to prevent excessive runtime
-    # toc = time.time()
-    # if (toc-tic)> runDur:
-        # print('Check runtime. Exiting soon')
-    # sleep(sleeptime) 
-    # This allows the IMU and Roboclaws to catch up. Reduces apparent 
-    # hitching in read+output errors which cause the Roboclaws to skip a 
-    # command.
-    i += 1  # Iterate timestep
+	    print(yawSum, reg.yaw_pitch_roll.x) #, yawGyro0[i+1,0]) #, yaw0[i+1,0] )
 
 
-''' ------------------------------------------------'''
-print('End loop')
+		# Minimize yawSum
+	    if (abs(yawSum*K))>=dy: 
+		# print('yawGyro0')
+	#         print(yawSum*K)
+		# Then correct attitude
+		# Send error amount and direction to drive rxn wheels or mtqs
+		DriveWheels(yawSum*K)
+		# DriveMTQ1(yawMag0)
+	    elif (abs(yawSum*K))<dy: 
+		# Stop motors from turning when not needed.
+		DriveWheels(0)
+	    else:
+		print('Error in while loop')
+
+	    # Battery voltage check
+	    battery()
+	    # Time code run time. Quit if >15 min to prevent excessive runtime
+	    # toc = time.time()
+	    # if (toc-tic)> runDur:
+		# print('Check runtime. Exiting soon')
+	    # sleep(sleeptime) 
+	    # This allows the IMU and Roboclaws to catch up. Reduces apparent 
+	    # hitching in read+output errors which cause the Roboclaws to skip a 
+	    # command.
+	    i += 1  # Iterate timestep
+
+
+	''' ------------------------------------------------'''
+	print('End loop')
+except KeyboardInterrupt:
+	print("User has stopped program")
+finally:
+	writer = csv.writer(f)
+	writer.writerows(imuR)
 
 # Output imu data into a csv file
-writer = csv.writer(f)
-writer.writerows(imuR)
+# writer = csv.writer(f)
+# writer.writerows(imuR)
 
 '''Kill motors and print done'''
 s.disconnect()
